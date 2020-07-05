@@ -58,7 +58,7 @@ const server = http.createServer( ( req, res ) => {
         res.writeHead(200, { 'Content-type': 'application/json' });
         res.end(data);
 
-    // Not found route ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    // Not found route ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     } else {
         res.writeHead(404);
         res.end('Page not found!');
