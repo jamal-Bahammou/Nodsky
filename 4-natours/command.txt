@@ -1,0 +1,7 @@
+
+Start mongod service:
+   $ sudo mongod --dbpath /var/lib/mongo --logpath /var/log/mongodb/mongod.log
+
+Start database command line:
+   $ mongo
+   >
