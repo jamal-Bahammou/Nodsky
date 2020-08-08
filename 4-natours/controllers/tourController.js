@@ -8,11 +8,25 @@ exports.getTours = async ( req, res ) => {
         console.log(req.query);
 
         // BUILD QUERY
+        // ADVANCED FILTERING
         const queryObj = { ...req.query };
         const exFields = [ 'page', 'sort', 'limit', 'fields' ];
         exFields.forEach( field => delete queryObj[field] );
+        let query = Tour.find(queryObj);
 
-        const query = Tour.find(queryObj);
+        // SORTING
+        if (req.query.sort) {
+            query = query.sort(req.query.sort);
+        } else {
+            query = query.sort('-createdAt');
+        }
+
+        // FIELD LIMITING
+        if (req.query.fields) {
+            query = query.select(req.query.fields);
+        } else {
+            query = query.select('-__v');
+        }
 
         // EXECUTE QUERY
         const tours = await query;
