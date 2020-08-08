@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const dotenv = require('dotenv')
 
+// IMPORTANT TO SHOW THE GET PATH 
 dotenv.config({ path: './config.env' })
 const app = require('./app')
 
