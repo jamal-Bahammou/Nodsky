@@ -5,6 +5,8 @@ const Tour = require('../models/tourModel')
 // GET ALL TOURS REQUEST --------------------------------------------------------------------------
 exports.getTours = async ( req, res ) => {
     try {
+        console.log(req.query);
+
         // BUILD QUERY
         const queryObj = { ...req.query };
         const exFields = [ 'page', 'sort', 'limit', 'fields' ];
