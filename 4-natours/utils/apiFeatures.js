@@ -39,10 +39,10 @@ class APIFeatures {
 
    // 4️⃣ PAGINATION
    paginate() {
-      const page = req.query.page * 1 || 1;
-      const limit = req.query.limit * 1 || 100;
+      const page = this.queryReq.page * 1 || 1;
+      const limit = this.queryReq.limit * 1 || 100;
       const skip = (page - 1) * limit;
-      query = query.skip(skip).limit(limit);
+      this.query = this.query.skip(skip).limit(limit);
 
       return this;
    }
