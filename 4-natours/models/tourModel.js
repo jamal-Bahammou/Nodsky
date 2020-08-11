@@ -7,7 +7,9 @@ const tourSchema = new mongoose.Schema({
         type: String,
         required: [true, 'A tour must have a name'],
         unique: true,
-        trim: true
+        trim: true,
+        maxlength: [40, 'A tour name must have less or equal then 40 characters'],
+        minlength: [10, 'A tour name must have more or equal 10 characters']
     },
     slug: String,
     duration: {
@@ -20,11 +22,17 @@ const tourSchema = new mongoose.Schema({
     },
     difficulty: {
         type: String,
-        required: [true, 'A tour must have a difficulty']
+        required: [true, 'A tour must have a difficulty'],
+        enum: {
+            values: ['easy', 'medium', 'difficult'],
+            message: 'Difficulty is either: easy, medium, difficult'
+        }
     },
     ratingsAverage: {
         type: Number,
-        default: 4.5
+        default: 4.5,
+        min: [1, 'Rating must be above 1.0'],
+        max: [5, 'Rating must be below 5.0']
     },
     ratingsQuantity: {
         type: Number,
@@ -34,7 +42,15 @@ const tourSchema = new mongoose.Schema({
         type: Number,
         required: [true, 'A tour must have a price']
     },
-    priceDiscount: Number,
+    priceDiscount: {
+        type: Number,
+        validate: {
+            validator: function(val) {
+                return val < this.price;
+            },
+            message: 'Discount price ({VALUE}) should be below regular price'
+        }
+    },
     summery: {
         type: String,
         trim: true
@@ -54,11 +70,17 @@ const tourSchema = new mongoose.Schema({
         default: Date.now(),
         select: false
     },
-    startDates: [Date]
+    startDates: [Date],
+    secretTour: {
+        type: Boolean,
+        default: false
+    }
 }, {
     toJSON: { virtuals: true },
     toObject: { virtuals: true }
 })
+
+//  🔥🔥 MIDDLEWARE -------------------------------------------------------------------------------------
 
 // Virtual variable
 tourSchema.virtual('durationWeeks').get( function() {
@@ -67,7 +89,21 @@ tourSchema.virtual('durationWeeks').get( function() {
 
 // Document Middleware: runs before .save() and .create()
 tourSchema.pre('save', function(next) {
+    // 🐐 this is the tour object before being saved
     this.slug = slugify(this.name, { lower: true });
+    next();
+})
+
+// Query middleware
+tourSchema.pre(/^find/, function(next) { // all the Hooks start with 'find' pre('find', function(next) {} )
+    // 🐐 this is the query object
+    this.find({ secretTour: { $ne: true } });
+    next();
+})
+
+// Aggregation middleware 
+tourSchema.pre('aggregate', function(next) {
+    this.pipeline().unshift({ $match: { secretTour: { $ne: true } } })
     next();
 })
 

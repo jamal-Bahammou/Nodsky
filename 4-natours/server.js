@@ -22,3 +22,6 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`App running on port ${PORT}...`)
 });
+
+// START LOCAL SERVER SIDE 
+// sudo mongod --dbpath /var/lib/mongo --logpath /var/log/mongodb/mongod.log
